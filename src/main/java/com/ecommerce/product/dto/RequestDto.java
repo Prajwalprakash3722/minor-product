@@ -6,8 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @Builder
 @AllArgsConstructor
@@ -20,8 +18,6 @@ public class RequestDto {
     private String description;
     private String category;
     private String image;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
     private Product.Rating rating;
 
 }

@@ -1,6 +1,27 @@
----
 version: '3.7'
 services:
+  ## Product Service Docker Compose Config
+  product-service:
+    container_name: "product-service"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - mongo
+    ports:
+      - "8080:8080"
+    expose:
+      - "8080"
+    environment:
+      - "SPRING_PROFILES_ACTIVE=docker" # env variable takes precedence
+    healthcheck:
+      test: curl --fail http://localhost:8080/actuator/health || exit 1
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    networks:
+      - product
+
   ## Mongo Docker Compose Config
   mongo:
     container_name: mongo-product
@@ -12,3 +33,13 @@ services:
       - "27017"
     volumes:
       - ./mongo-data:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo localhost:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    networks:
+      - product
+
+networks:
+  product:

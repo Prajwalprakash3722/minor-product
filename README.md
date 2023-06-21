@@ -20,12 +20,12 @@ Follow these steps to run the project:
    docker-compose up -d
 ```
 
-4. Build the project by running the following command:
+4. To create an executable JAR run the following command:
 
 ```bash
-mvn clean install
+mvn clean package
 ```
-5. Run the project by executing the following command to start the JAR file:
+5. To run the executable JAR with Java run the following command:
 
 ```bash
 java -jar target/product-service-0.0.1-SNAPSHOT.jar
@@ -38,7 +38,17 @@ java -jar target/product-service-0.0.1-SNAPSHOT.jar
 Access the API documentation at: http://localhost:8080/swagger-ui/index.html
 
 ## How to run the project on Docker
-TBD
+
+Docker has a different profie setup for it, which has been already configured in the compose file.
+
+```bash
+mvn clean package && docker-compose up -d --build
+```
 
 ## How to run the project on Kubernetes
 TBD
+
+## Production
+Production is the greatest place on the web! We should all want to go there.
+
+![prod](https://i.ibb.co/dc8mBCX/production.png)

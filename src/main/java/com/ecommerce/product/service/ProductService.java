@@ -5,6 +5,8 @@ import com.ecommerce.product.model.Product;
 import com.ecommerce.product.repositry.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -21,21 +23,13 @@ public class ProductService {
     }
 
     public void createProduct(RequestDto requestDto) {
-        Product product = Product.builder()
-                .title(requestDto.getTitle())
-                .description(requestDto.getDescription())
-                .category(requestDto.getCategory())
-                .imageUrl(requestDto.getImage())
-                .price(requestDto.getPrice())
-                .rating(requestDto.getRating())
-                .createdAt(LocalDateTime.now())
-                .build();
+        Product product = Product.builder().title(requestDto.getTitle()).description(requestDto.getDescription()).category(requestDto.getCategory()).imageUrl(requestDto.getImage()).price(requestDto.getPrice()).rating(requestDto.getRating()).createdAt(LocalDateTime.now()).build();
         productRepository.save(product);
         log.info("Product {} is saved", product.getId());
     }
 
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public Page<Product> getAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable);
     }
 
     public Product getProductById(String id) {
@@ -49,7 +43,10 @@ public class ProductService {
     }
 
     public List<Product> getProductByCategory(String category) {
-        return productRepository.findByCategory(category);
+        List<Product> products = productRepository.findByCategory(category);
+        if ((products != null)) return products;
+        else log.warn("Product with category {} not found", category);
+        return null;
     }
 
     public boolean deleteProductById(String id) {

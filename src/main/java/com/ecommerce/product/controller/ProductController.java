@@ -6,6 +6,8 @@ import com.ecommerce.product.service.ProductService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,18 +27,25 @@ public class ProductController {
 
     @ApiResponse(responseCode = "200", description = "Products found")
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getProducts() {
+    public ResponseEntity<Page<Product>> getProducts(Pageable pageable) {
         return new ResponseEntity<>(
-                this.productService.getAllProducts(), HttpStatus.OK
+                this.productService.getAllProducts(pageable), HttpStatus.OK
         );
     }
 
     @ApiResponse(responseCode = "200", description = "Product found")
     @GetMapping("/product/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable String id) {
-        return new ResponseEntity<>(
-                this.productService.getProductById(id), HttpStatus.OK
-        );
+
+        if (this.productService.getProductById(id) == null)
+            return new ResponseEntity<>(
+                    null, HttpStatus.NOT_FOUND
+            );
+        else {
+            return new ResponseEntity<>(
+                    this.productService.getProductById(id), HttpStatus.OK
+            );
+        }
     }
 
     @ApiResponse(responseCode = "201", description = "Product Created")
@@ -48,20 +57,23 @@ public class ProductController {
 
     @ApiResponse(responseCode = "200", description = "Products found")
     @GetMapping("/products/{category}")
-    public ResponseEntity<List<Product>> getProductByCategory(@Valid @PathVariable String category) {
-        return new ResponseEntity<>(
-                this.productService.getProductByCategory(category), HttpStatus.OK
-        );
+    public ResponseEntity<List<Product>> getProductByCategory(@PathVariable String category) {
+        if (this.productService.getProductByCategory(category) == null)
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        else
+            return new ResponseEntity<>(this.productService.getProductByCategory(category), HttpStatus.OK);
     }
-   @ApiResponse(responseCode = "200", description = "Product Deleted")
+
+
+    @ApiResponse(responseCode = "200", description = "Product Deleted")
     @DeleteMapping("/product/{id}")
     public ResponseEntity<Boolean> deleteProductById(@Valid @PathVariable String id) {
 
-        try{
+        try {
             return new ResponseEntity<>(
                     this.productService.deleteProductById(id), HttpStatus.OK
             );
-        }catch (Exception e){
+        } catch (Exception e) {
             return new ResponseEntity<>(
                     false, HttpStatus.INTERNAL_SERVER_ERROR
             );

@@ -4,7 +4,6 @@ import com.ecommerce.product.dto.RequestDto;
 import com.ecommerce.product.model.Product;
 import com.ecommerce.product.repositry.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
